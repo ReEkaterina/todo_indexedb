@@ -1,6 +1,7 @@
 {
   "name": "apple-like-todo",
   "version": "0.1.0",
+  "homepage": "https://reekaterina.github.io/todo_indexedb/",
   "private": true,
   "dependencies": {
     "antd": "^4.21.7",
