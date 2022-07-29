@@ -6,17 +6,9 @@ db.version(5).stores({
   tasks: '++id, content', // Primary key and indexed props
 });
 
-export function getTaskList() {
+export async function getTaskList() {
 
-  let tasks = useLiveQuery(
-    async () => await db.tasks.toArray()
-  );
-
-  if (!tasks) {
-    tasks = [];
-  }
-
-  return tasks;
+  return  await db.tasks.toArray();
 
 }
 

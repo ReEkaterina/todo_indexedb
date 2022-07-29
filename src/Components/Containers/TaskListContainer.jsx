@@ -12,16 +12,21 @@ export function TaskListContainer() {
     const [content, setContent] = useState("");
     const [editMode, toggleEditMode] = useState(false);
     const [searchMode, toggleSearchMode] = useState(false);
-    let [filteredTasks, setFilteredTasks] = useState([]);
+    const [tasks, setTasks] = useState([]);
 
-    let tasks = getTaskList();
-    if (searchMode) {
-        tasks = filteredTasks;
+    if (!tasks.length) {
+        fillTasks();    
+    }
+
+    if (editMode && searchMode) {
+        toggleSearchMode(false);
+        fillTasks();
     }
 
     function addTask() {
 
         toggleSearchMode(false);
+        fillTasks();
 
         addNewTask(NEW_TASK_CONTENT).then((id) => {
             updateCurrentTask({ id });
@@ -43,8 +48,8 @@ export function TaskListContainer() {
         deleteTask(currentTaskId);
         toggleEditMode(false);
         if (searchMode) { // deleting in search mode
-            const newFilteredTasks = filteredTasks.filter(item => item.id !== Number(currentTaskId));
-            setFilteredTasks(newFilteredTasks);
+            const newFilteredTasks = tasks.filter(item => item.id !== Number(currentTaskId));
+            setTasks(newFilteredTasks);
             if (newFilteredTasks) {
                 setCurrentTaskId(newFilteredTasks[0].id);
                 updateCurrentTask({
@@ -52,7 +57,6 @@ export function TaskListContainer() {
                 });
             }
         } else { // deleting in usual mode
-            setCurrentTaskId(tasks[0].id);
             updateCurrentTask({
                 id: tasks[0].id,
                 content: tasks[0].content,
@@ -61,16 +65,23 @@ export function TaskListContainer() {
 
     }
 
+    function fillTasks(){
+        getTaskList().then((data) => setTasks(data));
+    }
+
     function onSearch(value) {
 
         if (value) {
             toggleEditMode(false);
             filterTasks(item => item.content.search(value) >= 0).then(data => {
-                setFilteredTasks(data);
+                setTasks(data);
                 toggleSearchMode(true);
+                setCurrentTaskId('');
+                setContent('');
             });
         } else {
             toggleSearchMode(false);
+            fillTasks();
         }
 
     }
@@ -85,7 +96,7 @@ export function TaskListContainer() {
         if (content) { // if content changes
             setContent(content);
             updateTask(currentTaskId, content);
-            if (searchMode) {
+            if (searchMode && editMode) {
                 toggleSearchMode(false);
             }
         }
