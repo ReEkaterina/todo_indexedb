@@ -15,7 +15,7 @@ export function TaskListContainer() {
     const [tasks, setTasks] = useState([]);
 
     if (!tasks.length) {
-        fillTasks();    
+        fillTasks();
     }
 
     if (editMode && searchMode) {
@@ -25,12 +25,11 @@ export function TaskListContainer() {
 
     function addTask() {
 
-        toggleSearchMode(false);
-        fillTasks();
-
         addNewTask(NEW_TASK_CONTENT).then((id) => {
             updateCurrentTask({ id });
             toggleEditMode(true);
+            setTasks([...tasks, { id, content: NEW_TASK_CONTENT }]);
+            toggleSearchMode(false);
         });
 
     }
@@ -50,7 +49,7 @@ export function TaskListContainer() {
         if (searchMode) { // deleting in search mode
             const newFilteredTasks = tasks.filter(item => item.id !== Number(currentTaskId));
             setTasks(newFilteredTasks);
-            if (newFilteredTasks) {
+            if (newFilteredTasks.length) {
                 setCurrentTaskId(newFilteredTasks[0].id);
                 updateCurrentTask({
                     id: newFilteredTasks[0].id,
@@ -65,7 +64,7 @@ export function TaskListContainer() {
 
     }
 
-    function fillTasks(){
+    function fillTasks() {
         getTaskList().then((data) => setTasks(data));
     }
 
@@ -99,6 +98,10 @@ export function TaskListContainer() {
             if (searchMode && editMode) {
                 toggleSearchMode(false);
             }
+        }
+
+        if (!searchMode) {
+            fillTasks();
         }
 
     }

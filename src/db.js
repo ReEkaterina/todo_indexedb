@@ -1,5 +1,4 @@
 import Dexie from 'dexie';
-import { useLiveQuery } from 'dexie-react-hooks';
 
 export const db = new Dexie('myDatabase');
 db.version(5).stores({
@@ -8,7 +7,7 @@ db.version(5).stores({
 
 export async function getTaskList() {
 
-  return  await db.tasks.toArray();
+  return await db.tasks.toArray();
 
 }
 
