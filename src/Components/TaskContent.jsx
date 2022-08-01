@@ -7,13 +7,17 @@ export function TaskContent(props) {
         return <div style={{
             width: '80%',
             display: 'inline-block',
-        }}>{props.content}</div>;
+        }}>
+            <div>{props.date}</div>
+            {props.content}
+        </div>;
     }
 
     return <div style={{
         width: '80%',
         display: 'inline-block',
     }}>
+        <div>{props.date}</div>
         <TextArea
             placeholder="Type here"
             style={{

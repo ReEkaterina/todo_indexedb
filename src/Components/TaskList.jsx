@@ -1,6 +1,7 @@
 import React from "react";
 import 'antd/dist/antd.css';
 import { Menu } from 'antd';
+import { dateFormat } from '../date'
 
 
 function getItem(label, key, icon, children, type) {
@@ -15,7 +16,7 @@ function getItem(label, key, icon, children, type) {
 
 export function TaskList(props){
 
-    const items = props.tasks.map(task => getItem(task.content, task.id));
+    const items = props.tasks.map(task => getItem(task.content + ' ' + dateFormat(task.date), task.id));
        
     return (
       <div

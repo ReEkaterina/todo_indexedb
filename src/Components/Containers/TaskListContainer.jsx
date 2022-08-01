@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { dateFormat } from "../../date";
 import { addNewTask, deleteTask, filterTasks, getTaskContent, getTaskList, updateTask } from "../../db";
 import { Header } from "../Header";
 import { TaskContent } from "../TaskContent";
 import { TaskList } from "../TaskList";
 
-const NEW_TASK_CONTENT = "New task";
+const NEW_TASK_CONTENT = "";
 
 export function TaskListContainer() {
 
@@ -13,6 +14,7 @@ export function TaskListContainer() {
     const [editMode, toggleEditMode] = useState(false);
     const [searchMode, toggleSearchMode] = useState(false);
     const [tasks, setTasks] = useState([]);
+    const [currentTaskDate, setCurrentTaskDate] = useState('');
 
     if (!tasks.length) {
         fillTasks();
@@ -54,6 +56,8 @@ export function TaskListContainer() {
                 updateCurrentTask({
                     id: newFilteredTasks[0].id,
                 });
+            } else {
+                setContent('');
             }
         } else { // deleting in usual mode
             updateCurrentTask({
@@ -72,7 +76,7 @@ export function TaskListContainer() {
 
         if (value) {
             toggleEditMode(false);
-            filterTasks(item => item.content.search(value) >= 0).then(data => {
+            filterTasks(item => item.content.toLowerCase().search(value.toLowerCase()) >= 0).then(data => {
                 setTasks(data);
                 toggleSearchMode(true);
                 setCurrentTaskId('');
@@ -89,10 +93,11 @@ export function TaskListContainer() {
 
         if (id) { // if switch between tasks
             setCurrentTaskId(id);
-            getTaskContent(id).then((data) => setContent(data.length ? data[0].content : ''));
-        }
-
-        if (content) { // if content changes
+            getTaskContent(id).then((data) => {
+                setCurrentTaskDate(dateFormat(data.length ? data[0].date : ''));
+                setContent(data.length ? data[0].content : '');
+            });
+        } else { // if content changes
             setContent(content);
             updateTask(currentTaskId, content);
             if (searchMode && editMode) {
@@ -118,7 +123,8 @@ export function TaskListContainer() {
         <TaskContent setContent={setContent}
             content={content}
             editMode={editMode}
-            updateCurrentTask={updateCurrentTask} />
+            updateCurrentTask={updateCurrentTask}
+            date={currentTaskDate} />
     </span>;
 
 }

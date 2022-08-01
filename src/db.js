@@ -2,7 +2,7 @@ import Dexie from 'dexie';
 
 export const db = new Dexie('myDatabase');
 db.version(5).stores({
-  tasks: '++id, content', // Primary key and indexed props
+  tasks: '++id, content, date', // Primary key and indexed props
 });
 
 export async function getTaskList() {
@@ -15,6 +15,7 @@ export async function addNewTask(content) {
   try {
     return await db.tasks.add({
       content,
+      date: new Date(),
     });
   } catch (error) {
     console.log(`Failed to add task : ${error}`);
