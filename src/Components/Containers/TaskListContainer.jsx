@@ -97,6 +97,7 @@ export function TaskListContainer() {
                 setCurrentTaskDate(dateFormat(data.length ? data[0].date : ''));
                 setContent(data.length ? data[0].content : '');
             });
+            toggleEditMode(false);
         } else { // if content changes
             setContent(content);
             updateTask(currentTaskId, content);

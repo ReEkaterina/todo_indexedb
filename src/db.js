@@ -33,13 +33,9 @@ export async function deleteTask(id = 2) {
 export async function updateTask(id, content) {
   try {
     db.tasks.update(Number(id), { content }).then(function (updated) {
-      if (updated)
-        console.log(`Task number ${id} was updated`);
-      else
-        console.log("Nothing was updated");
     });
   } catch (error) {
-    console.log(`Failed to update task : ${error}`);
+    console.error(`Failed to update task : ${error}`);
   }
 }
 
