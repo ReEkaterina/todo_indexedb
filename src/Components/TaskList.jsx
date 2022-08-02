@@ -30,7 +30,7 @@ export function TaskList(props) {
         dataSource={props.tasks}
         bordered={true}
         renderItem={(item) => (
-          <div style={{ height: '60px', overflow: 'hidden', border: `${props.currentTaskId===item.id ? '1' : '0'}px solid black`, }}>
+          <div style={{ height: '60px', overflow: 'hidden', cursor: 'pointer', border: `${props.currentTaskId===item.id ? '1' : '0'}px solid black`, }}>
             <List.Item onClick={() => props.updateCurrentTaskByParams({ id: item.id })}>
               <List.Item.Meta
                 title={dateFormat(item.date)}
