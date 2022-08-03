@@ -22,7 +22,7 @@ export async function addNewTask(content) {
   }
 }
 
-export async function deleteTask(id = 2) {
+export async function deleteTask(id) {
   try {
     await db.tasks.delete(Number(id));
   } catch (error) {

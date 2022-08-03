@@ -1,24 +1,14 @@
 import React from "react";
 import 'antd/dist/antd.css';
-import { Avatar, List, Menu } from 'antd';
+import { List } from 'antd';
 import { dateFormat } from '../date'
+import { Context } from "../Context";
 
 
-function getItem(label, key, icon, children, type) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    type,
-  };
-}
+export function TaskList({tasks, currentTaskId, updateCurrentTask}) {
 
-export function TaskList(props) {
-
-  const items = props.tasks.map(task => getItem(task.content + ' ' + dateFormat(task.date), task.id));
-
-  return (
+  return <Context.Consumer>
+  {({tasks, currentTaskId, updateCurrentTask}) => (
     <div
       style={{
         width: '20%',
@@ -27,11 +17,11 @@ export function TaskList(props) {
     >
       <List
         itemLayout="horizontal"
-        dataSource={props.tasks}
+        dataSource={tasks}
         bordered={true}
         renderItem={(item) => (
-          <div style={{ height: '60px', overflow: 'hidden', cursor: 'pointer', border: `${props.currentTaskId===item.id ? '1' : '0'}px solid black`, }}>
-            <List.Item onClick={() => props.updateCurrentTaskByParams({ id: item.id })}>
+          <div style={{ height: '60px', overflow: 'hidden', cursor: 'pointer', border: `${currentTaskId===item.id ? '1' : '0'}px solid black`, }}>
+            <List.Item onClick={() => updateCurrentTask({ id: item.id })}>
               <List.Item.Meta
                 title={dateFormat(item.date)}
                 description={item.content}
@@ -41,6 +31,6 @@ export function TaskList(props) {
         )}
       />
     </div>
-  );
-
+  )}
+  </Context.Consumer>;
 }

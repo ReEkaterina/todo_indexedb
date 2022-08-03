@@ -1,15 +1,18 @@
 import TextArea from "antd/lib/input/TextArea";
-import React from "react";
+import React, { useContext } from "react";
+import { Context } from "../Context";
 
-export function TaskContent(props) {
+export function TaskContent() {
 
-    if (!props.editMode) {
+    const { date, editMode, content, updateCurrentTask} = useContext(Context);
+
+    if (!editMode) {
         return <div style={{
             width: '80%',
             display: 'inline-block',
         }}>
-            <div>{props.date}</div>
-            {props.content}
+            <div>{date}</div>
+            {content}
         </div>;
     }
 
@@ -17,15 +20,15 @@ export function TaskContent(props) {
         width: '80%',
         display: 'inline-block',
     }}>
-        <div>{props.date}</div>
+        <div>{date}</div>
         <TextArea
             placeholder="Type here"
             style={{
                 width: '80%',
                 display: 'inline-block',
             }}
-            value={props.content}
-            onChange={(event) => props.updateCurrentTask({ content: event.target.value })}
+            value={content}
+            onChange={(event) => updateCurrentTask({ content: event.target.value })}
         />
     </div>
 

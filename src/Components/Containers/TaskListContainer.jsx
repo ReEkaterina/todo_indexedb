@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Context } from "../../Context";
 import { dateFormat } from "../../date";
-import { addNewTask, deleteTask, filterTasks, getTaskContent, getTaskList, updateTask } from "../../db";
+import { filterTasks, getTaskContent, getTaskList, updateTask } from "../../db";
+import { addTask, removeTask } from "../../tasks";
 import { Header } from "../Header";
 import { TaskContent } from "../TaskContent";
 import { TaskList } from "../TaskList";
-
-const NEW_TASK_CONTENT = "";
 
 export function TaskListContainer() {
 
@@ -16,54 +16,36 @@ export function TaskListContainer() {
     const [tasks, setTasks] = useState([]);
     const [currentTaskDate, setCurrentTaskDate] = useState('');
 
-    if (!tasks.length) {
-        fillTasks();
-    }
+    useEffect(() => fillTasks(), []);
 
     if (editMode && searchMode) {
         toggleSearchMode(false);
         fillTasks();
     }
 
-    function addTask() {
-
-        addNewTask(NEW_TASK_CONTENT).then((id) => {
-            updateCurrentTask({ id });
-            toggleEditMode(true);
-            setTasks([...tasks, { id, content: NEW_TASK_CONTENT }]);
-            toggleSearchMode(false);
-        });
-
+    function add() {
+        addTask(updateCurrentTask, tasks, setTasks);
+        toggleEditMode(true);
+        toggleSearchMode(false);
     }
 
-    function editTask() {
-
+    function edit() {
         if (currentTaskId) {
             toggleEditMode(!editMode);
         }
-
     }
 
-    function confirmDeletingTask() {
+    function confirmDeleting() {
 
-        deleteTask(currentTaskId);
         toggleEditMode(false);
-        if (searchMode) { // deleting in search mode
-            const newFilteredTasks = tasks.filter(item => item.id !== Number(currentTaskId));
-            setTasks(newFilteredTasks);
-            if (newFilteredTasks.length) {
-                setCurrentTaskId(newFilteredTasks[0].id);
-                updateCurrentTask({
-                    id: newFilteredTasks[0].id,
-                });
-            } else {
-                setContent('');
+        const newCurrentTaskId = removeTask(currentTaskId, tasks, searchMode, setTasks);
+        if (newCurrentTaskId) {
+            if (currentTaskId !== newCurrentTaskId) {
+                setCurrentTaskId(newCurrentTaskId);
             }
-        } else { // deleting in usual mode
-            updateCurrentTask({
-                id: tasks[0].id,
-                content: tasks[0].content,
-            });
+            updateCurrentTask({ id: newCurrentTaskId });
+        } else {
+            setContent('');
         }
 
     }
@@ -81,6 +63,7 @@ export function TaskListContainer() {
                 toggleSearchMode(true);
                 setCurrentTaskId('');
                 setContent('');
+                setCurrentTaskDate('');
             });
         } else {
             toggleSearchMode(false);
@@ -112,20 +95,23 @@ export function TaskListContainer() {
 
     }
 
-    return <span>
-        <Header addTask={addTask}
-            editTask={editTask}
-            confirmDeletingTask={confirmDeletingTask}
-            onSearch={onSearch} />
-        <TaskList tasks={tasks}
-            currentTaskId={currentTaskId}
-            setCurrentTaskId={setCurrentTaskId}
-            updateCurrentTaskByParams={updateCurrentTask} />
-        <TaskContent setContent={setContent}
-            content={content}
-            editMode={editMode}
-            updateCurrentTask={updateCurrentTask}
-            date={currentTaskDate} />
-    </span>;
+    return <Context.Provider value={{
+        addTask: add,
+        editTask: edit,
+        confirmDeleting,
+        onSearch,
+        tasks,
+        currentTaskId,
+        setCurrentTaskId,
+        updateCurrentTask,
+        content,
+        editMode,
+        setContent,
+        date: currentTaskDate,
+    }}>
+        <Header />
+        <TaskList />
+        <TaskContent />
+    </Context.Provider>;
 
 }
