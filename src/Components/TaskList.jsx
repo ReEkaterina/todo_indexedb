@@ -1,26 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import 'antd/dist/antd.css';
 import { List } from 'antd';
 import { dateFormat } from '../date'
 import { Context } from "../Context";
+import '../styles.css';
 
 
-export function TaskList({tasks, currentTaskId, updateCurrentTask}) {
+export function TaskList() {
 
-  return <Context.Consumer>
-  {({tasks, currentTaskId, updateCurrentTask}) => (
-    <div
-      style={{
-        width: '20%',
-        display: 'inline-block',
-      }}
-    >
+  const {tasks, currentTaskId, updateCurrentTask} = useContext(Context);
+
+  return (
+    <div className="taskListContainer" >
       <List
         itemLayout="horizontal"
         dataSource={tasks}
         bordered={true}
         renderItem={(item) => (
-          <div style={{ height: '60px', overflow: 'hidden', cursor: 'pointer', border: `${currentTaskId===item.id ? '1' : '0'}px solid black`, }}>
+          <div className={`task-item-container ${currentTaskId===item.id ? "task-item-active" : ''}`} >
             <List.Item onClick={() => updateCurrentTask({ id: item.id })}>
               <List.Item.Meta
                 title={dateFormat(item.date)}
@@ -31,6 +28,5 @@ export function TaskList({tasks, currentTaskId, updateCurrentTask}) {
         )}
       />
     </div>
-  )}
-  </Context.Consumer>;
+  );
 }

@@ -1,0 +1,15 @@
+.taskListContainer {
+    width: 20%;
+    display: inline-block;
+}
+
+.task-item-container {
+    height: 60px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 0px;
+}
+
+.task-item-active {
+    border: 1px solid black;
+}

@@ -40,9 +40,7 @@ export function TaskListContainer() {
         toggleEditMode(false);
         const newCurrentTaskId = removeTask(currentTaskId, tasks, searchMode, setTasks);
         if (newCurrentTaskId) {
-            if (currentTaskId !== newCurrentTaskId) {
-                setCurrentTaskId(newCurrentTaskId);
-            }
+            setCurrentTaskId(newCurrentTaskId);
             updateCurrentTask({ id: newCurrentTaskId });
         } else {
             setContent('');
