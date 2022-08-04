@@ -13,3 +13,8 @@
 .task-item-active {
     border: 1px solid black;
 }
+
+.task-content-container {
+    width: 80%;
+    display: inline-block;
+}
